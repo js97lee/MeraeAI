@@ -269,6 +269,7 @@ h1 {
   justify-content: flex-end;
   background: var(--navy-800);
   color: #fff;
+  padding-left: 6px;
 }
 
 .msg-avatar {
