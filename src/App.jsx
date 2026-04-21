@@ -14,11 +14,12 @@ const initialMessages = [
 ];
 
 export default function App() {
+  const assetBase = `${import.meta.env.BASE_URL}assets/`;
   const [popupOpen, setPopupOpen] = useState(false);
   const [chatInput, setChatInput] = useState("");
   const [messages, setMessages] = useState(initialMessages);
-  const heroLine1 = "전략적 침묵으로";
-  const heroLine2 = "완성하는 협업";
+  const heroLine1 = "커뮤니티 참여를 시작하게 만들고";
+  const heroLine2 = "계속 이어지게 하는 AI 에이전트";
   const heroTitle = `${heroLine1}${heroLine2}`;
   const [typedTitle, setTypedTitle] = useState("");
 
@@ -109,7 +110,7 @@ export default function App() {
       <header id="top" className="hero section">
         <div className="container hero-grid">
           <div>
-            <p className="kicker">FTRI / BLUE SYSTEM</p>
+            <p className="kicker">v1.0 · 베타 참여 오픈 · FTRI / 2026</p>
             <h1>
               <span className="title-line">
                 {typedTitle.slice(0, heroLine1.length) || "\u00A0"}
@@ -120,54 +121,87 @@ export default function App() {
               </span>
             </h1>
             <p className="lede">
-              미래AI는 필요한 순간에만 개입하는 멀티 에이전트 오케스트레이터입니다.
-              이제 전체 톤은 네이비와 라이트 블루로 통일했습니다.
+              미래AI는 디스코드 기반 커뮤니티에서 신규 온보딩, 참여 유도, 협업 연결,
+              운영 리마인드를 자동화해 사람이 머무르고 움직이는 흐름을 설계합니다.
             </p>
             <div className="hero-cta">
               <a className="btn btn-primary" href="#final" onClick={openPopup}>
-                무료로 시작하기
+                무료로 입양하세요
               </a>
               <a className="btn btn-ghost" href="#demo">
-                데모 보기
+                온보딩을 시작해요
               </a>
             </div>
           </div>
           <div className="hero-art">
-            <img src="/assets/mirae-lab-hero.jpg" alt="Mirae Lab" />
+            <img src={`${assetBase}mirae-lab-hero.jpg`} alt="Mirae Lab" />
           </div>
         </div>
       </header>
 
       <section id="philosophy" className="section dark">
         <div className="container">
-          <p className="kicker">DESIGN PRINCIPLE</p>
-          <h2>말 많은 AI보다, 필요한 순간의 정확한 개입</h2>
+          <p className="kicker">FTRI · DESIGN PRINCIPLE</p>
+          <h2>말 많은 AI는, 오히려 협업에 방해가 됩니다.</h2>
           <p className="lede">
-            선택적 개입, 자율성 존중, 맥락 유지라는 세 가지 원칙으로 협업 리듬을 지킵니다.
+            미래생각연구소는 선택적 개입 원칙을 지킵니다. 필요한 순간에만 개입해,
+            본질에만 몰입할 수 있도록.
+          </p>
+        </div>
+      </section>
+
+      <section id="master" className="section">
+        <div className="container">
+          <p className="kicker">MASTER AGENT</p>
+          <h2>흐름을 설계하는 총괄 수석 조교, 미래AI.</h2>
+          <p className="lede">
+            미래AI는 답변을 생성하는 것이 아니라, 지금 개입할지 침묵할지를 판단하는
+            오케스트레이터입니다. 대화 밀도와 감정 긴장도를 읽고,
+            필요한 순간에만 하위 에이전트를 호출합니다.
           </p>
         </div>
       </section>
 
       <section id="agents" className="section">
         <div className="container">
-          <p className="kicker">SPECIALIST AGENTS</p>
+          <p className="kicker">SPECIALIST T.A.</p>
+          <h2>각자의 영역에서 당신의 성장을 조력합니다.</h2>
+          <p className="lede">
+            미래AI의 지휘 아래, 네 마리의 전문 조교 고양이가 온보딩부터 코딩·기록·컨텍스트 정렬까지
+            서로 다른 영역에서 당신을 지원합니다.
+          </p>
           <div className="cards">
             <article className="card">
-              <img src="/assets/agent-mangul.png" alt="밍글AI" />
+              <img src={`${assetBase}agent-mangul.png`} alt="밍글AI" />
               <h3>밍글AI</h3>
-              <p>온보딩과 정서적 완충</p>
+              <p>낯선 시작을 기분 좋은 연결로. 신규 참여자 적응과 정서적 완충을 담당합니다.</p>
             </article>
             <article className="card">
-              <img src="/assets/agent-sync.png" alt="싱크AI" />
+              <img src={`${assetBase}agent-sync.png`} alt="싱크AI" />
               <h3>싱크AI</h3>
-              <p>쟁점 정렬과 문맥 요약</p>
+              <p>흩어진 논의를 정렬된 맥락으로 동기화하고, 공유인지를 만듭니다.</p>
             </article>
             <article className="card">
-              <img src="/assets/agent-ellen.png" alt="코드AI" />
+              <img src={`${assetBase}agent-ellen.png`} alt="코드AI" />
               <h3>코드AI</h3>
-              <p>아이디어를 실행 가능한 빌드로 전환</p>
+              <p>추상적 아이디어를 실행 과제로 전환하고, 기술적 결과물로 구현합니다.</p>
+            </article>
+            <article className="card">
+              <img src={`${assetBase}agent-bisher.png`} alt="비셔AI" />
+              <h3>비셔AI</h3>
+              <p>조용히 관찰하고 정확하게 기록해 결정·약속·합의사항을 구조화합니다.</p>
             </article>
           </div>
+        </div>
+      </section>
+
+      <section id="how" className="section dark">
+        <div className="container">
+          <p className="kicker">ONBOARDING PROTOCOL</p>
+          <h2>3분 안에, 당신의 첫 조교단을 배정받습니다.</h2>
+          <p className="lede">
+            커뮤니티 연결 → 조교단 배정 → 선택적 개입 시작의 3단계로 온보딩이 진행됩니다.
+          </p>
         </div>
       </section>
 
@@ -175,8 +209,8 @@ export default function App() {
         <div className="container demo">
           <div>
             <p className="kicker">LIVE DEMO</p>
-            <h2>실시간 대화 데모</h2>
-            <p className="lede">질문을 입력하면 미래AI가 개입 여부를 판단해 응답합니다.</p>
+            <h2>침묵의 무게를 느껴보세요.</h2>
+            <p className="lede">실제 커뮤니티에서 미래AI가 응답하고, 보류하고, 침묵하는 흐름을 확인해보세요.</p>
           </div>
           <div className="chat">
             <div className="chat-body">
@@ -201,9 +235,23 @@ export default function App() {
         </div>
       </section>
 
+      <section id="faq" className="section dark">
+        <div className="container">
+          <p className="kicker">FAQ</p>
+          <h2>자주 묻는 질문</h2>
+          <p className="lede">
+            미래AI는 일반 챗봇과 달리 "답변" 이전에 "개입 여부"를 판단합니다.
+            팀의 리듬을 설계하는 오케스트레이터라는 점이 핵심 차이입니다.
+          </p>
+        </div>
+      </section>
+
       <section id="final" className="section final">
         <div className="container">
           <h2>첫 번째 조교단과 지금 만나세요.</h2>
+          <p className="lede" style={{ color: "#d3e7ff" }}>
+            베타 참여 시 5마리 조교단 전체 · 커뮤니티 데이터 암호화 · 맞춤 커스텀 슬롯을 무료로 이용할 수 있습니다.
+          </p>
           <a className="btn btn-light" href="#" onClick={openPopup}>
             베타 신청하기
           </a>
