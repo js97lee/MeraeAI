@@ -13,15 +13,47 @@ const initialMessages = [
   { id: 3, from: "sync", name: "싱크AI", text: "지난 대화 핵심 3가지를 먼저 정리해둘게요." },
 ];
 
+function LetterGlitchBackground() {
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const cells = Array.from({ length: 180 }, (_, i) => ({
+    id: i,
+    char: letters[Math.floor(Math.random() * letters.length)],
+    delay: `${(i % 12) * 0.12}s`,
+    duration: `${2 + (i % 7) * 0.35}s`,
+  }));
+
+  return (
+    <div className="letter-glitch-bg" aria-hidden="true">
+      {cells.map((cell) => (
+        <span
+          key={cell.id}
+          className="glitch-char"
+          style={{ animationDelay: cell.delay, animationDuration: cell.duration }}
+        >
+          {cell.char}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export default function App() {
   const assetBase = `${import.meta.env.BASE_URL}assets/`;
   const [popupOpen, setPopupOpen] = useState(false);
   const [chatInput, setChatInput] = useState("");
   const [messages, setMessages] = useState(initialMessages);
-  const heroLine1 = "커뮤니티 참여를 시작하게 만들고";
-  const heroLine2 = "계속 이어지게 하는 AI 에이전트";
-  const heroTitle = `${heroLine1}${heroLine2}`;
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0, visible: false });
+  const heroLine1 = "커뮤니티 참여를";
+  const heroLine2 = "시작하게 만들고";
+  const heroLine3 = "계속 이어지게 하는";
+  const heroTitle = "AI 에이전트";
   const [typedTitle, setTypedTitle] = useState("");
+  const getAgentAvatar = (from) => {
+    if (from === "mingle") return `${assetBase}agent-mangul.png`;
+    if (from === "sync") return `${assetBase}agent-sync.png`;
+    if (from === "mirae") return `${assetBase}agent-mirae.png`;
+    return "";
+  };
 
   const reply = useMemo(
     () => botReplies[Math.floor(Math.random() * botReplies.length)],
@@ -36,37 +68,42 @@ export default function App() {
   }, [popupOpen]);
 
   useEffect(() => {
-    let index = 0;
-    let isDeleting = false;
-    let timeoutId;
-
-    const tick = () => {
-      if (!isDeleting && index < heroTitle.length) {
-        index += 1;
-      } else if (isDeleting && index > 0) {
-        index -= 1;
-      }
-
-      setTypedTitle(heroTitle.slice(0, index));
-
-      if (!isDeleting && index === heroTitle.length) {
-        isDeleting = true;
-        timeoutId = setTimeout(tick, 1200);
-        return;
-      }
-
-      if (isDeleting && index === 0) {
-        isDeleting = false;
-        timeoutId = setTimeout(tick, 400);
-        return;
-      }
-
-      timeoutId = setTimeout(tick, isDeleting ? 60 : 110);
+    const onMove = (e) => {
+      setCursorPos({ x: e.clientX, y: e.clientY, visible: true });
+    };
+    const onLeave = () => {
+      setCursorPos((prev) => ({ ...prev, visible: false }));
     };
 
-    timeoutId = setTimeout(tick, 350);
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseleave", onLeave);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseleave", onLeave);
+    };
+  }, []);
 
-    return () => clearTimeout(timeoutId);
+  useEffect(() => {
+    let timeoutId;
+    let cancelled = false;
+    let index = 0;
+    setTypedTitle("");
+
+    const typeNext = () => {
+      if (cancelled) return;
+      index += 1;
+      setTypedTitle(heroTitle.slice(0, index));
+      if (index < heroTitle.length) {
+        timeoutId = setTimeout(typeNext, 140);
+      }
+    };
+
+    timeoutId = setTimeout(typeNext, 300);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
   }, [heroTitle]);
 
   const handleSubmit = (e) => {
@@ -113,10 +150,16 @@ export default function App() {
             <p className="kicker">v1.0 · 베타 참여 오픈 · FTRI / 2026</p>
             <h1>
               <span className="title-line">
-                {typedTitle.slice(0, heroLine1.length) || "\u00A0"}
+                {heroLine1}
               </span>
               <span className="title-line">
-                {typedTitle.slice(heroLine1.length) || "\u00A0"}
+                {heroLine2}
+              </span>
+              <span className="title-line">
+                {heroLine3}
+              </span>
+              <span className="title-line">
+                {typedTitle || "\u00A0"}
                 <span className="typing-cursor" aria-hidden="true" />
               </span>
             </h1>
@@ -167,10 +210,15 @@ export default function App() {
           <p className="kicker">SPECIALIST T.A.</p>
           <h2>각자의 영역에서 당신의 성장을 조력합니다.</h2>
           <p className="lede">
-            미래AI의 지휘 아래, 네 마리의 전문 조교 고양이가 온보딩부터 코딩·기록·컨텍스트 정렬까지
+            미래AI의 지휘 아래, 다섯 마리의 전문 조교 고양이가 온보딩부터 코딩·기록·컨텍스트 정렬까지
             서로 다른 영역에서 당신을 지원합니다.
           </p>
           <div className="cards">
+            <article className="card">
+              <img src={`${assetBase}agent-mirae.png`} alt="미래AI" />
+              <h3>미래AI</h3>
+              <p>전체 흐름을 설계하고, 지금 개입할지 침묵할지를 판단하는 오케스트레이터입니다.</p>
+            </article>
             <article className="card">
               <img src={`${assetBase}agent-mangul.png`} alt="밍글AI" />
               <h3>밍글AI</h3>
@@ -200,7 +248,10 @@ export default function App() {
           <p className="kicker">ONBOARDING PROTOCOL</p>
           <h2>3분 안에, 당신의 첫 조교단을 배정받습니다.</h2>
           <p className="lede">
-            커뮤니티 연결 → 조교단 배정 → 선택적 개입 시작의 3단계로 온보딩이 진행됩니다.
+            1단계에서 디스코드 채널 구조와 기존 대화 흐름을 읽고, 2단계에서 참여자의 역할·목표·활동
+            패턴을 분석해 맞춤 조교단 조합을 제안합니다. 마지막 3단계에서는 실시간 참여 시그널을 기반으로
+            개입 강도를 자동 조절해 신규 참여자가 자연스럽게 대화에 합류하고, 핵심 논의에서 이탈하지 않도록
+            운영 리마인드까지 이어집니다.
           </p>
         </div>
       </section>
@@ -216,8 +267,17 @@ export default function App() {
             <div className="chat-body">
               {messages.map((msg) => (
                 <div key={msg.id} className={`msg ${msg.from === "me" ? "me" : ""}`}>
-                  <span className="name">{msg.name}</span>
-                  <p>{msg.text}</p>
+                  {msg.from !== "me" ? (
+                    <img className="msg-avatar" src={getAgentAvatar(msg.from)} alt={msg.name} />
+                  ) : (
+                    <span className="msg-avatar me-picto" aria-hidden="true">
+                      👤
+                    </span>
+                  )}
+                  <div className="msg-content">
+                    <span className="name">{msg.name}</span>
+                    <p>{msg.text}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -247,6 +307,7 @@ export default function App() {
       </section>
 
       <section id="final" className="section final">
+        <LetterGlitchBackground />
         <div className="container">
           <h2>첫 번째 조교단과 지금 만나세요.</h2>
           <p className="lede" style={{ color: "#d3e7ff" }}>
@@ -269,6 +330,14 @@ export default function App() {
           </div>
         </div>
       )}
+
+      <div
+        className={`kitty-cursor ${cursorPos.visible ? "show" : ""}`}
+        style={{ transform: `translate(${cursorPos.x + 8}px, ${cursorPos.y + 6}px)` }}
+        aria-hidden="true"
+      >
+        <img src={`${assetBase}cursor-cat.png`} alt="" />
+      </div>
     </>
   );
 }
